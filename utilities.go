@@ -42,6 +42,10 @@ func global_init() {
 	}
 
 	executable_path = filepath.Dir(temp1)
+
+	if !file_exists(filepath.Join(executable_path, "secrets")) {
+		os.Mkdir(filepath.Join(executable_path, "secrets"), 0777)
+	}
 }
 
 func input_text() string {

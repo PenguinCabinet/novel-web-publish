@@ -72,6 +72,6 @@ nwp addでエピソードを追加することができます。
 Deploying to なろう...
 Successd
 ```
-nwp deployとすると、nwp.yamlのdeploysに記されたデプロイ先にデプロイをおこないます。  
+nwp deployとすると、nwp.yamlのdeploysに記されたデプロイ先にデプロイがおこないます。  
 デプロイ先の小説投稿サイトと同期がとられて、差分の分だけ追加されたりあるいは消去されます。
 
