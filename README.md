@@ -1,15 +1,20 @@
-# novel-web-publish(nwp)
+# 📚novel-web-publish(nwp)
 これは小説サイト(なろう等)に自動アップロードできるコマンドラインツールです。
 
-# 現在デプロイ先として対応中のサイト
+# ⬇ダウンロード
+[Windows](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_windows_x86_64.zip)   
+[Windows(ARM)](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_windows_armv6.zip)
+[Linux](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_linux_x86_64.tar.gz)
+
+# 📒現在デプロイ先として対応中のサイト
 * [小説家になろう](https://syosetu.com/)
 
-# Warning
+# ⚠Warning
 現在アルファー版で問題点があります。
 * 現在、デプロイするとなろうの小説カテゴリーはその他になります。修正予定です。
 * なろうのキーワードを設定する方法が現在ありません。修正予定です。
 
-# Quick Start
+# 🚀Quick Start
 ```bash
 /root/home/novel>nwp narou login 
 Email>test@example.com
