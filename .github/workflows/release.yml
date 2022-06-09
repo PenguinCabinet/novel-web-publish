@@ -19,7 +19,7 @@ jobs:
       - name: Install Library
         run: |
           sudo apt update -y
-          sudo apt-get install gcc-arm-linux-gnueabihf -y
+          sudo apt-get install gcc-arm-linux-gnueabihf gcc-aarch64-linux-gnu -y
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
