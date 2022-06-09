@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 )
 
@@ -47,8 +48,12 @@ func main() {
 					for _, e := range Project_Setting_data.Deploys {
 						if e == "narou" {
 							fmt.Println("Deploying to なろう...")
-							deploy_of_Narou(episodes, Project_Setting_data, summary)
-							fmt.Println("Successd")
+							deploy_errs := deploy_of_Narou(episodes, Project_Setting_data, summary)
+							if len(deploy_errs) == 0 {
+								fmt.Println(color.GreenString("Successd"))
+							} else {
+								fmt.Println(color.RedString("Failed"))
+							}
 						}
 					}
 

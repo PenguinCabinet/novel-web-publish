@@ -15,12 +15,42 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/fatih/color"
 )
 
 type Narou_secrets struct {
 	Id    string `json:"id"`
 	Userl string `json:"userl"`
 	Ses   string `json:"ses"`
+}
+
+func Project_check_of_narou(episodes []episode_t, summary string, title string) []error {
+	A := []error{}
+	if title == "" {
+		A = append(A, errors.New("タイトルを空にできません"))
+	}
+	str_temp_summary := strings.Replace(summary, "\n", "", -1)
+	str_temp_summary = strings.Replace(str_temp_summary, " ", "", -1)
+	str_len_summary := len([]rune(str_temp_summary))
+	if str_len_summary < 10 {
+		A = append(A, errors.New("あらすじが10文字未満です。あらすじは10文字以上1000文字以下でなければなりません。"))
+	}
+	if str_len_summary > 1000 {
+		A = append(A, errors.New("あらすじが1000文字以上です。あらすじは10文字以上1000文字以下でなければなりません。"))
+	}
+	for _, e := range episodes {
+		str_temp := strings.Replace(e.Body, "\n", "", -1)
+		str_temp = strings.Replace(str_temp, " ", "", -1)
+		str_len := len([]rune(str_temp))
+		if 200 > str_len {
+			A = append(A, errors.New(fmt.Sprintf("エピソード「%s」の本文が200文字以下です。エピソードの本文は200文字より大きく70000文字より小さくなければなりません。", e.Meta.Title)))
+		}
+		if str_len > 70000 {
+			A = append(A, errors.New(fmt.Sprintf("エピソード「%s」の本文が70000文字以上です。エピソードの本文は200文字より大きく70000文字より小さくなければなりません。", e.Meta.Title)))
+		}
+	}
+
+	return A
 }
 
 func login_narou(id string, password string) error {
@@ -531,7 +561,75 @@ func delete_episode_of_narou(Edit_id, edit_episode_id string, Project_Setting_da
 	//fmt.Println(temp4)
 }
 
-func deploy_of_Narou(episodes []episode_t, Project_Setting_data Project_Setting, summary string) {
+func update_info_of_narou(Edit_id string, Project_Setting_data Project_Setting, Narou_secrets_data *Narou_secrets, summary string) {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	client := &http.Client{Jar: jar}
+
+	FORM_data := map[string]string{}
+
+	FORM_data["end"] = "1"
+	FORM_data["ex"] = summary
+	FORM_data["genre"] = "9999"
+	FORM_data["title"] = Project_Setting_data.Title
+
+	temp, _ := http_call("https://syosetu.com", fmt.Sprintf("https://syosetu.com/usernovelmanage/updateinput/ncode/%s/", Edit_id), map[string]string{}, client, "GET",
+		[]*http.Cookie{&http.Cookie{
+			Name:     "userl",
+			Value:    Narou_secrets_data.Userl,
+			HttpOnly: true,
+		},
+		})
+
+	//fmt.Println(temp)
+
+	bufferReader := bytes.NewReader([]byte(temp))
+
+	document, _ := goquery.NewDocumentFromReader(bufferReader)
+	to_Path, _ := document.Find("form").Attr("action")
+	to_URL := "https://syosetu.com" + to_Path
+
+	csrf, _ := document.Find("form").Find("[name ='csrf_onetimepass']").Attr("value")
+	FORM_data["csrf_onetimepass"] = csrf
+
+	temp2, _ := http_call("https://syosetu.com", to_URL, FORM_data, client, "POST",
+		[]*http.Cookie{&http.Cookie{
+			Name:     "userl",
+			Value:    Narou_secrets_data.Userl,
+			HttpOnly: true,
+		},
+		})
+
+	bufferReader2 := bytes.NewReader([]byte(temp2))
+
+	document2, _ := goquery.NewDocumentFromReader(bufferReader2)
+	to_Path2, _ := document2.Find("form").Attr("action")
+	to_URL2 := "https://syosetu.com" + to_Path2
+
+	csrf, _ = document2.Find("form").Find("[name ='csrf_onetimepass']").Attr("value")
+	FORM_data["csrf_onetimepass"] = csrf
+	//fmt.Println(csrf)
+
+	http_call("https://syosetu.com", to_URL2, FORM_data, client, "POST",
+		[]*http.Cookie{&http.Cookie{
+			Name:     "userl",
+			Value:    Narou_secrets_data.Userl,
+			HttpOnly: true,
+		},
+		})
+}
+
+func deploy_of_Narou(episodes []episode_t, Project_Setting_data Project_Setting, summary string) []error {
+	Project_Erros := Project_check_of_narou(episodes, summary, Project_Setting_data.Title)
+	if len(Project_Erros) > 0 {
+		for _, e := range Project_Erros {
+			fmt.Println(color.RedString(fmt.Sprintf("Error:%s", e.Error())))
+		}
+		return Project_Erros
+	}
 	Narou_secrets_data := load_narou_secret()
 	novel_list := Get_list_of_narou(&Narou_secrets_data)
 	Is_exist_novel := false
@@ -556,6 +654,8 @@ func deploy_of_Narou(episodes []episode_t, Project_Setting_data Project_Setting,
 
 	Narou_episodes := Get_list_of_episode_of_narou(edit_id, &Narou_secrets_data)
 
+	update_info_of_narou(edit_id, Project_Setting_data, &Narou_secrets_data, summary)
+
 	for i, e := range episodes {
 		if i < len(Narou_episodes) {
 			if e.Body == Narou_episodes[i].Data.Body && e.Meta.Title == Narou_episodes[i].Data.Meta.Title {
@@ -578,4 +678,5 @@ func deploy_of_Narou(episodes []episode_t, Project_Setting_data Project_Setting,
 		}
 	}
 
+	return []error{}
 }
