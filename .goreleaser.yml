@@ -25,19 +25,6 @@ builds:
       - arm
       - arm64
   - main: .
-    id: nwp-darwin
-    binary: nwp
-    ldflags:
-      - -s -w
-      - -X main.Version={{.Version}}
-      - -X main.Revision={{.ShortCommit}}
-    env:
-      - CGO_ENABLED=1
-    goos:
-      - darwin
-    goarch:
-      - arm64
-  - main: .
     id: nwp-linux-amd
     binary: nwp
     ldflags:
