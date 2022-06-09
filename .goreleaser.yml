@@ -10,7 +10,7 @@ checksum:
 
 builds:
   - main: .
-    id: nwp-win-mac
+    id: nwp
     binary: nwp
     ldflags:
       - -s -w
@@ -20,13 +20,26 @@ builds:
       - CGO_ENABLED=1
     goos:
       - windows
-      - darwin
     goarch:
       - amd64
       - arm
       - arm64
   - main: .
-    id: nwp-linux-amd64
+    id: nwp
+    binary: nwp
+    ldflags:
+      - -s -w
+      - -X main.Version={{.Version}}
+      - -X main.Revision={{.ShortCommit}}
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+  - main: .
+    id: nwp
     binary: nwp
     ldflags:
       - -s -w
@@ -40,7 +53,7 @@ builds:
     goarch:
       - amd64
   - main: .
-    id: nwp-linux-arm
+    id: nwp
     binary: nwp
     ldflags:
       - -s -w
