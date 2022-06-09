@@ -1,0 +1,4 @@
+超あらすじだけれど、俺は何の変哲もない高校二年生。友達がロング派なのでぶっ潰すぜ。ベリーショートヘアって素晴らしい。うぇーい
+
+これはコマンドラインからなろうに投稿できるのnovel-web-publishのサンプルプロジェクトです
+https://github.com/PenguinCabinet/novel-web-publish
