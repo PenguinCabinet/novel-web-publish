@@ -3,7 +3,7 @@
 
 # ⬇ダウンロード
 [Windows](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_windows_x86_64.zip)   
-[Windows(ARM)](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_windows_armv6.zip)
+[Windows(ARM)](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_windows_armv6.zip)   
 [Linux](https://github.com/PenguinCabinet/novel-web-publish/releases/download/v0.0.12/nwp_linux_x86_64.tar.gz)
 
 # 📒現在デプロイ先として対応中のサイト
